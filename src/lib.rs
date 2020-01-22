@@ -1,6 +1,8 @@
+#![recursion_limit = "256"]
+
 mod components;
 
-use self::components::{controls::Controls, dashboard::Dashboard};
+use self::components::{controls::Controls, dashboard::Dashboard, messages::Messages};
 use yew::prelude::*;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -22,11 +24,13 @@ pub struct Model {
     balance: usize,
     state: State,
     link: ComponentLink<Self>,
+    messages: Vec<String>,
 }
 
 #[derive(Debug, Clone)]
 pub enum Msg {
     ChangeState(State),
+    PushMessage(String),
 }
 
 impl Component for Model {
@@ -38,6 +42,10 @@ impl Component for Model {
             balance: 4_500,
             state: State::PreGame,
             link,
+            messages: vec![
+                "Welcome to Blackjack Online!".to_string(),
+                "© Cory Aitchison 2020".to_string(),
+            ],
         }
     }
 
@@ -45,6 +53,9 @@ impl Component for Model {
         match msg {
             Msg::ChangeState(target) => {
                 self.state = target;
+            }
+            Msg::PushMessage(msg) => {
+                self.messages.push(msg);
             }
         }
         true
@@ -54,12 +65,14 @@ impl Component for Model {
         html! {
             <div class="model",>
                 <div class=("container-header", "container", "curved"),>
-                    <h class="header">{ "💰💰💰 Blackjack Online 💰💰💰"}</h>
+                    <h class="header">{ match self.state {
+                        State::PreGame => "💰💰💰 Blackjack Online 💰💰💰",
+                        _ => "Play!"
+                    }}</h>
                 </div>
                 <div class=("container-main", "container", "curved"),>
-                    <div class="main",>
-                        <Controls: state=&self.state, onsignal=self.link.callback(|msg| msg),/>
-                    </div>
+                    <Messages: messages=&self.messages,/>
+                    <Controls: state=&self.state, onsignal=self.link.callback(|msg| msg),/>
                     <Dashboard: balance={ self.balance },/>
                 </div>
             </div>

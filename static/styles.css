@@ -23,7 +23,7 @@
   width: 100vw;
   height: 100vh;
   /*  */
-  background-color: lightsalmon;
+  background-color: grey;
   /*  */
   border-style: solid;
   border-color: whitesmoke;
@@ -51,20 +51,49 @@
 
 .container-main {
   grid-area: main;
-  grid-template-rows: 3fr 1fr;
+  grid-template-rows: 3fr 1fr 1fr;
   grid-template-areas:
-    "upper"
-    "lower";
+    "messages"
+    "controls"
+    "dashboard";
   /*  */
   font-size: 22px;
 }
-.main {
-  grid-area: upper;
-  font-weight: bold;
+
+.container-controls {
+  grid-area: controls;
+  grid-template-columns: 1fr 1fr 1fr;
 }
-.dashboard {
-  grid-area: lower;
+
+.container-dashboard {
+  grid-area: dashboard;
   grid-template-columns: repeat(3, 1fr);
+}
+
+.container-messages {
+  grid-area: messages;
+  background-color: grey;
+  color: white;
+  justify-self: stretch;
+  margin: 15px;
+  min-width: 0;
+  font-family: "Courier New", Courier, monospace;
+}
+.scroller-wrapper {
+  align-self: stretch;
+  position: relative;
+}
+.scroller {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: scroll;
+  padding: 15px;
+}
+ul {
+  list-style-type: none;
 }
 
 .footer {
@@ -80,26 +109,12 @@ button[class*="btn"] {
   border: 0;
 }
 
-.container-controls {
-  grid-template-columns: 2fr 1fr 2fr;
-  grid-template-rows: 1fr 1fr;
-  grid-template-areas:
-    "control-top control-top control-top"
-    ". control-centre .";
-}
-.container-controls .centre {
-  grid-area: control-centre;
-}
-.container-controls .top {
-  grid-area: control-top;
-}
-
 /* 3D Button */
 .btn-3d {
   position: relative;
   display: inline-block;
   font-size: 22px;
-  padding: 20px 60px;
+  padding: 20px 30px;
   color: white;
   margin: 20px 10px 10px;
   border-radius: 6px;
@@ -126,7 +141,7 @@ button[class*="btn"] {
   background-color: #82d1e3;
 }
 
-.btn-3d:active {
+.btn-3d.active:active {
   top: 9px;
 }
 
@@ -137,7 +152,8 @@ button[class*="btn"] {
     0 8px 0 0 #c24032, 0 8px 0 1px rgba(0, 0, 0, 0.4),
     0 8px 8px 1px rgba(0, 0, 0, 0.5);
 }
-.btn-3d.red:active {
+.btn-3d.red:active,
+.btn-3d.red.inactive {
   box-shadow: 0 0 0 1px #c63702 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset,
     0 0 0 1px rgba(0, 0, 0, 0.4);
 }
@@ -148,7 +164,8 @@ button[class*="btn"] {
     0 8px 0 0 rgba(110, 164, 219, 0.7), 0 8px 0 1px rgba(0, 0, 0, 0.4),
     0 8px 8px 1px rgba(0, 0, 0, 0.5);
 }
-.btn-3d.blue:active {
+.btn-3d.blue:active,
+.btn-3d.blue.inactive {
   box-shadow: 0 0 0 1px #6191c2 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset,
     0 0 0 1px rgba(0, 0, 0, 0.4);
 }
@@ -159,7 +176,8 @@ button[class*="btn"] {
     0 8px 0 0 rgba(126, 194, 155, 0.7), 0 8px 0 1px rgba(0, 0, 0, 0.4),
     0 8px 8px 1px rgba(0, 0, 0, 0.5);
 }
-.btn-3d.green:active {
+.btn-3d.green:active,
+.btn-3d.green.inactive {
   box-shadow: 0 0 0 1px #82c8a0 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset,
     0 0 0 1px rgba(0, 0, 0, 0.4);
 }
@@ -170,7 +188,8 @@ button[class*="btn"] {
     0 8px 0 0 rgba(189, 142, 183, 0.7), 0 8px 0 1px rgba(0, 0, 0, 0.4),
     0 8px 8px 1px rgba(0, 0, 0, 0.5);
 }
-.btn-3d.purple:active {
+.btn-3d.purple:active,
+.btn-3d.purple.inactive {
   box-shadow: 0 0 0 1px #cb99c5 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset,
     0 0 0 1px rgba(0, 0, 0, 0.4);
 }
@@ -181,7 +200,8 @@ button[class*="btn"] {
     0 8px 0 0 rgba(102, 164, 178, 0.6), 0 8px 0 1px rgba(0, 0, 0, 0.4),
     0 8px 8px 1px rgba(0, 0, 0, 0.5);
 }
-.btn-3d.cyan:active {
+.btn-3d.cyan:active,
+.btn-3d.cyan.inactive {
   box-shadow: 0 0 0 1px #7fccde inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset,
     0 0 0 1px rgba(0, 0, 0, 0.4);
 }
@@ -192,7 +212,8 @@ button[class*="btn"] {
     0 8px 0 0 rgba(196, 172, 83, 0.7), 0 8px 0 1px rgba(0, 0, 0, 0.4),
     0 8px 8px 1px rgba(0, 0, 0, 0.5);
 }
-.btn-3d.yellow:active {
+.btn-3d.yellow:active,
+.btn-3d.yellow.inactive {
   box-shadow: 0 0 0 1px #f0d264 inset, 0 0 0 2px rgba(255, 255, 255, 0.15) inset,
     0 0 0 1px rgba(0, 0, 0, 0.4);
 }

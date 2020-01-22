@@ -38,7 +38,7 @@ impl Component for Dashboard {
 
     fn view(&self) -> Html {
         html! {
-            <div class=("container", "dashboard"),>
+            <div class=("container", "container-dashboard"),>
                 <p>{format!("Balance: ${}", self.balance)}</p>
                 <p>{ "Test! "}</p>
                 <p>{ "Test! "}</p>

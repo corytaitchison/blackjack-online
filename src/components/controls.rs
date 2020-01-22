@@ -18,15 +18,6 @@ pub struct Props {
     pub state: State,
 }
 
-// impl Default for Props {
-//     fn default() -> Self {
-//         Self {
-//             onsignal: None,
-//             state: State::None,
-//         }
-//     }
-// }
-
 impl Component for Controls {
     type Message = Msg;
     type Properties = Props;
@@ -41,12 +32,7 @@ impl Component for Controls {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::ButtonPressed(msg) => {
-                self.onsignal.emit(msg)
-                // if let Some(ref mut callback) = self.onsignal {
-                //     callback.emit(msg);
-                // }
-            }
+            Msg::ButtonPressed(msg) => self.onsignal.emit(msg),
         }
         false
     }
@@ -64,11 +50,16 @@ impl Component for Controls {
             _ => State::PreGame,
         };
         html! {
-            <div class=("container container-controls"),>
-                <div class="top",>
-                    <p>{ format!("{:?}", self.state) }</p>
-                </div>
-                <button class=("btn-3d", "green", "centre"), onclick=self.link.callback(move |_| Msg::ButtonPressed(ChangeState(s))),>{ "👉😎👉 Click me!" }</button>
+            <div class=("container-controls", "container"),>
+                <span>
+                    <button class=("btn-3d", "green", "active"), onclick=self.link.callback(move |_| Msg::ButtonPressed(ChangeState(s))),>{ "👉😎👉 Click me!" }</button>
+                </span>
+                <span>
+                    <button class=("btn-3d", "purple", "active"), onclick=self.link.callback(move |_| Msg::ButtonPressed(PushMessage("Boop!".to_string()))),>{ "Hi! "}</button>
+                </span>
+                <span>
+                    <button class=("btn-3d", "cyan", "inactive"),>{ "Inactive" }</button>
+                </span>
             </div>
         }
     }
