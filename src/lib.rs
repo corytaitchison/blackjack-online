@@ -1,5 +1,6 @@
 #![recursion_limit = "256"]
 
+mod blackjack;
 mod components;
 
 use self::components::{controls::Controls, dashboard::Dashboard, messages::Messages};
@@ -31,6 +32,7 @@ pub struct Model {
 pub enum Msg {
     ChangeState(State),
     PushMessage(String),
+    PlayGame,
 }
 
 impl Component for Model {
@@ -56,6 +58,10 @@ impl Component for Model {
             }
             Msg::PushMessage(msg) => {
                 self.messages.push(msg);
+            }
+            Msg::PlayGame => {
+                let outcome = blackjack::play();
+                self.update(Msg::PushMessage(format!("${}", outcome)));
             }
         }
         true

@@ -55,7 +55,7 @@ impl Component for Controls {
                     <button class=("btn-3d", "green", "active"), onclick=self.link.callback(move |_| Msg::ButtonPressed(ChangeState(s))),>{ "👉😎👉 Click me!" }</button>
                 </span>
                 <span>
-                    <button class=("btn-3d", "purple", "active"), onclick=self.link.callback(move |_| Msg::ButtonPressed(PushMessage("Boop!".to_string()))),>{ "Hi! "}</button>
+                    <button class=("btn-3d", "purple", "active"), onclick=self.link.callback(move |_| Msg::ButtonPressed(PlayGame)),>{ " Play "}</button>
                 </span>
                 <span>
                     <button class=("btn-3d", "cyan", "inactive"),>{ "Inactive" }</button>
