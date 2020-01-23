@@ -6,7 +6,7 @@ const RESHUFFLE: usize = 18;
 const NUM_DECKS: usize = 6;
 const BUST_KWD: &str = &"bust";
 const STARTING_MONEY: usize = 1_000_000;
-const NUM_LOOPS: usize = 5_000;
+const NUM_LOOPS: usize = 50_000;
 const BET_UNIT: usize = 1;
 
 // --- CARDS ---
@@ -451,6 +451,7 @@ pub fn play(
                         "h"
                         } else {
                             match $e.sum {
+                                Card::Maybe(_, 21) => "s",
                                 Card::Maybe(_, n) => {
                                     rule_soft[[((match n {
                                         12 => 9,

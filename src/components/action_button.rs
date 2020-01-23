@@ -21,6 +21,7 @@ pub struct ActionButton {
     state: State,
     link: ComponentLink<Self>,
     onsignal: Callback<chooser::Msg>,
+    active: bool,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -35,6 +36,8 @@ pub struct Props {
     pub state: State,
     #[props(required)]
     pub onsignal: Callback<chooser::Msg>,
+    #[props(required)]
+    pub active: bool,
 }
 
 impl Component for ActionButton {
@@ -46,6 +49,7 @@ impl Component for ActionButton {
             state: props.state,
             link,
             onsignal: props.onsignal,
+            active: props.active,
         }
     }
 
@@ -70,26 +74,46 @@ impl Component for ActionButton {
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
         self.state = props.state;
+        self.active = props.active;
         self.onsignal = props.onsignal;
         true
     }
 
     fn view(&self) -> Html {
-        html! {
-            <button class=("btn-3d", "active", "btn-action", {
-                match self.state {
-                    State::S => "red",
-                    State::H => "blue",
-                    State::D => "green",
-                    State::T(_) => "yellow",
-                    State::Y => "green",
-                    State::N => "red",
-                }
-            }), onclick=self.link.callback(|_| Msg::ButtonPressed),>{ match self.state {
-                State::T(99) | State::T(1) => "A".to_string(),
-                State::T(i) => format!("{}", i),
-                i => format!("{:?}", i),
-            }} </button>
+        if self.active {
+            html! {
+                <button class=("btn-3d", if self.active {"active"} else {"inactive"}, "btn-action", {
+                    match self.state {
+                        State::S => "red",
+                        State::H => "blue",
+                        State::D => "green",
+                        State::T(_) => "yellow",
+                        State::Y => "green",
+                        State::N => "red",
+                    }
+                }), onclick=self.link.callback(|_| Msg::ButtonPressed),>{ match self.state {
+                    State::T(99) | State::T(1) => "A".to_string(),
+                    State::T(i) => format!("{}", i),
+                    i => format!("{:?}", i),
+                }} </button>
+            }
+        } else {
+            html! {
+                <button class=("btn-3d", if self.active {"active"} else {"inactive"}, "btn-action", {
+                    match self.state {
+                        State::S => "red",
+                        State::H => "blue",
+                        State::D => "green",
+                        State::T(_) => "yellow",
+                        State::Y => "green",
+                        State::N => "red",
+                    }
+                }),>{ match self.state {
+                    State::T(99) | State::T(1) => "A".to_string(),
+                    State::T(i) => format!("{}", i),
+                    i => format!("{:?}", i),
+                }} </button>
+            }
         }
     }
 }

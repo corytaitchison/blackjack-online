@@ -51,7 +51,7 @@ impl Component for Model {
                 "Welcome to Blackjack Online!".to_string(),
                 "It's just like normal blackjack except I've taken the fun away because you don't actually play the game!".to_string(),
                 "Instead, you just tell the computer what you would do in each situation.".to_string(),
-                "Then we run a couple million simulations and see how much you would've earnt!".to_string(),
+                "Then we run about 13 million simulations and see how much you would've earnt!".to_string(),
             ],
             console: ConsoleService::new(),
             chooser_link: None,
@@ -75,7 +75,7 @@ impl Component for Model {
                             "Welcome to Blackjack Online!".to_string(),
                             "It's just like normal blackjack except I've taken the fun away because you don't actually play the game!".to_string(),
                             "Instead, you just tell the computer what you would do in each situation.".to_string(),
-                            "Then we run a couple million simulations and see how much you would've earnt!".to_string(),
+                            "Then we run about 13 million simulations and see how much you would've earnt!".to_string(),
                         ];
                     }
                     _ => (),
@@ -119,40 +119,3 @@ impl Component for Model {
         }
     }
 }
-
-// {
-//     match self.state {
-//         State::Hard {
-//             html! {
-//                 <>
-//                 <p class="bold"> { "--- HARD HANDS ---"} </p>
-//                 <p> {"The rows (numbers 9-18) represent the sum total of the cards in your hand, if you do NOT have an Ace."} </p>
-//                 <p> {"The columns (numbers 2-A) represent the dealer's card that is face up at the start of the round."} </p>
-//                 </>
-//             }
-//         }
-//         _ => panic!("Error");
-//     }
-// }
-// {
-//     match self.state {
-//         State::Hard | State::Soft {
-//             html! {
-//                 <>
-// <p> {"\"S\" means STAND - don't pick up any more cards."} </p>
-// <p> {"\"H\" means HIT - take another card from the deck."} </p>
-// <p> {"\"D\" means DOUBLE - double your starting bet and pick up only one more card."} </p>
-//                 </>
-//             }
-//         },
-//         State::Splits {
-//             html! {
-//                 <>
-//                 <p> {"\"Y\" means YES - split your hand in two."} </p>
-//                 <p> {"\"N\" means NO - don't split your hand in two."} </p>
-//                 </>
-//             }
-//         },
-//         _ => panic!("Shouldn't be here")
-//     }
-// }

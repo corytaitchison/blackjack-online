@@ -126,6 +126,9 @@ impl Component for Chooser {
             }
             Msg::ToggleColumn(j) => {
                 for i in 0..10 {
+                    if i == 8 && self.state == State::Soft {
+                        continue;
+                    };
                     toggle_item(&mut active_array[[i, j]]);
                 }
             }
@@ -177,6 +180,7 @@ impl Component for Chooser {
                             "\"D\" means DOUBLE - double your starting bet and pick up only one more card.".to_string(),
                             "Choose your action by clicking the buttons on the right.".to_string(),
                             "The yellow buttons toggle the entire row / column.".to_string(),
+                            "Note that you cannot toggle the \"10\" row, becuase A+10 is already 21.".to_string()
                         ],
                         State::Splits => vec![
                             "--- SPLITS ---".to_string(),
@@ -197,7 +201,7 @@ impl Component for Chooser {
                         <ActionButton: state=action_button::State::T(match j {
                             9 => 99,
                             _ => j + 2
-                        }), onsignal=self.link.callback(move |_| Msg::ToggleColumn(j)), />
+                        }), onsignal=self.link.callback(move |_| Msg::ToggleColumn(j)), active=true,/>
                     })}
                     { for (0..10).map(|i|
                         {
@@ -208,7 +212,7 @@ impl Component for Chooser {
                                     _ => match i {
                                         9 => 99,
                                         _ => i + 2},
-                                }), onsignal=self.link.callback(move |_| Msg::ToggleRow(i)), />
+                                }), onsignal=self.link.callback(move |_| Msg::ToggleRow(i)), active=(i!=8 || self.state != State::Soft),/>
                                 { for (0..10).map(|j| html! {
                                     <ActionButton: state=convert_state(
                                         match self.state {
@@ -217,7 +221,7 @@ impl Component for Chooser {
                                             State::Splits => self.splits_array[[i,j]],
                                             State::None => panic!("Shouldn't be here"),
                                         }
-                                    ), onsignal=self.link.callback(move |_| Msg::ToggleCell(i, j))/>
+                                    ), onsignal=self.link.callback(move |_| Msg::ToggleCell(i, j)), active=(i!=8 || self.state != State::Soft),/>
                                 })}
                                 </>
                             }
