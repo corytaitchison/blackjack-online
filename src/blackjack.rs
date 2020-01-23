@@ -1,13 +1,13 @@
-use ndarray::arr2;
+use ndarray::Array2;
 use rand::{seq::SliceRandom, thread_rng};
 
 const SHUFFLE_SIZE: usize = 260;
 const RESHUFFLE: usize = 18;
 const NUM_DECKS: usize = 6;
 const BUST_KWD: &str = &"bust";
-const STARTING_MONEY: usize = 1_000;
-const NUM_LOOPS: usize = 50;
-const BET_UNIT: usize = 25;
+const STARTING_MONEY: usize = 1_000_000;
+const NUM_LOOPS: usize = 5_000;
+const BET_UNIT: usize = 1;
 
 // --- CARDS ---
 
@@ -254,7 +254,11 @@ fn choice(input: &str, deck: &mut Deck, hand: &mut Hand, wallet: &mut Wallet) ->
 
 #[allow(unused_assignments)]
 #[allow(unused_macros)]
-pub fn play() -> usize {
+pub fn play(
+    rule_hard: &Array2<&'static str>,
+    rule_soft: &Array2<&'static str>,
+    rule_split: &Array2<&'static str>,
+) -> usize {
     let mut wallet = Wallet::new();
 
     let mut deck = Deck::new();
@@ -271,9 +275,9 @@ pub fn play() -> usize {
             }
 
             if let Err(_) = wallet.place_bet(BET_UNIT) {
-                println!("Balance too low (${})", wallet.balance);
+                // println!("Balance too low (${})", wallet.balance);
                 running_balance.push(wallet.balance);
-                break 'main;
+                break 'play;
             }
 
             let mut hand = Hand::new(&mut deck);
@@ -348,42 +352,82 @@ pub fn play() -> usize {
                 }};
             }
 
-            let rule_split = arr2(&[
-                [1, 1, 1, 1, 1, 1, 0, 0, 0, 0], // 2,2
-                [1, 1, 1, 1, 1, 1, 0, 0, 0, 0], // 3,3
-                [0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-                [1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 0, 1, 1, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // A,A
-            ]);
+            // let rule_split = arr2(&[
+            //     ["y", "y", "y", "y", "y", "y", "n", "n", "n", "n"], // 2,2
+            //     ["y", "y", "y", "y", "y", "y", "n", "n", "n", "n"], // 3,3
+            //     ["n", "n", "n", "y", "y", "n", "n", "n", "n", "n"],
+            //     ["n", "n", "n", "n", "n", "n", "n", "n", "n", "n"],
+            //     ["y", "y", "y", "y", "y", "n", "n", "n", "n", "n"],
+            //     ["y", "y", "y", "y", "y", "y", "n", "n", "n", "n"],
+            //     ["y", "y", "y", "y", "y", "y", "y", "y", "y", "y"],
+            //     ["y", "y", "y", "y", "y", "n", "y", "y", "n", "n"],
+            //     ["n", "n", "n", "n", "n", "n", "n", "n", "n", "n"], // 10, 10
+            //     ["y", "y", "y", "y", "y", "y", "y", "y", "y", "y"], // A,A
+            // ]);
 
-            let rule_soft = arr2(&[
-                ["h", "h", "h", "d", "d", "h", "h", "h", "h", "h"], //A,A
-                ["h", "h", "h", "d", "d", "h", "h", "h", "h", "h"], //A,2
-                ["h", "h", "h", "d", "d", "h", "h", "h", "h", "h"], //A,3
-                ["h", "h", "d", "d", "d", "h", "h", "h", "h", "h"], //A,4
-                ["h", "h", "d", "d", "d", "h", "h", "h", "h", "h"],
-                ["h", "d", "d", "d", "d", "h", "h", "h", "h", "h"],
-                ["d", "d", "d", "d", "d", "s", "s", "h", "h", "h"],
-                ["s", "s", "s", "s", "d", "s", "s", "s", "s", "s"],
-                ["s", "s", "s", "s", "s", "s", "s", "s", "s", "s"],
-                ["s", "s", "s", "s", "s", "s", "s", "s", "s", "s"], // A,10
-            ]);
+            // let rule_soft = arr2(&[
+            //     ["h", "h", "h", "d", "d", "h", "h", "h", "h", "h"], //A,2
+            //     ["h", "h", "h", "d", "d", "h", "h", "h", "h", "h"], //A,3
+            //     ["h", "h", "d", "d", "d", "h", "h", "h", "h", "h"], //A,4
+            //     ["h", "h", "d", "d", "d", "h", "h", "h", "h", "h"],
+            //     ["h", "d", "d", "d", "d", "h", "h", "h", "h", "h"],
+            //     ["d", "d", "d", "d", "d", "s", "s", "h", "h", "h"],
+            //     ["s", "s", "s", "s", "d", "s", "s", "s", "s", "s"],
+            //     ["s", "s", "s", "s", "s", "s", "s", "s", "s", "s"],
+            //     ["s", "s", "s", "s", "s", "s", "s", "s", "s", "s"], // A,10
+            //     ["h", "h", "h", "d", "d", "h", "h", "h", "h", "h"], //A,A
+            // ]);
 
-            let rule_hard = arr2(&[
-                ["s", "d", "d", "d", "d", "s", "s", "s", "s", "s"], // 9
-                ["d", "d", "d", "d", "d", "d", "d", "d", "s", "s"], // 10
-                ["d", "d", "d", "d", "d", "d", "d", "d", "d", "d"], // 11
-                ["h", "h", "s", "s", "s", "h", "h", "h", "h", "h"],
-                ["s", "s", "s", "s", "s", "h", "h", "h", "h", "h"],
-                ["s", "s", "s", "s", "s", "h", "h", "h", "h", "h"],
-                ["s", "s", "s", "s", "s", "h", "h", "h", "h", "h"],
-                ["s", "s", "s", "s", "s", "h", "h", "h", "h", "h"], //16
-            ]);
+            // let rule_hard = arr2(&[
+            //     ["s", "d", "d", "d", "d", "s", "s", "s", "s", "s"], // 9
+            //     ["d", "d", "d", "d", "d", "d", "d", "d", "s", "s"], // 10
+            //     ["d", "d", "d", "d", "d", "d", "d", "d", "d", "d"], // 11
+            //     ["h", "h", "s", "s", "s", "h", "h", "h", "h", "h"],
+            //     ["s", "s", "s", "s", "s", "h", "h", "h", "h", "h"],
+            //     ["s", "s", "s", "s", "s", "h", "h", "h", "h", "h"],
+            //     ["s", "s", "s", "s", "s", "h", "h", "h", "h", "h"],
+            //     ["s", "s", "s", "s", "s", "h", "h", "h", "h", "h"], //16
+            //     ["s", "s", "s", "s", "s", "s", "s", "s", "s", "s"], //17
+            //     ["s", "s", "s", "s", "s", "s", "s", "s", "s", "s"], //18
+            // ]);
+
+            // BACKUP
+            // hard_array: arr2(&[
+            //     ["s", "d", "d", "d", "d", "s", "s", "s", "s", "s"], // 9
+            //     ["d", "d", "d", "d", "d", "d", "d", "d", "s", "s"], // 10
+            //     ["d", "d", "d", "d", "d", "d", "d", "d", "d", "d"], // 11
+            //     ["h", "h", "s", "s", "s", "h", "h", "h", "h", "h"],
+            //     ["s", "s", "s", "s", "s", "h", "h", "h", "h", "h"],
+            //     ["s", "s", "s", "s", "s", "h", "h", "h", "h", "h"],
+            //     ["s", "s", "s", "s", "s", "h", "h", "h", "h", "h"],
+            //     ["s", "s", "s", "s", "s", "h", "h", "h", "h", "h"], //16
+            //     ["s", "s", "s", "s", "s", "s", "s", "s", "s", "s"], //17
+            //     ["s", "s", "s", "s", "s", "s", "s", "s", "s", "s"], //18
+            // ]),
+            // soft_array: arr2(&[
+            //     ["h", "h", "h", "d", "d", "h", "h", "h", "h", "h"], //A,2
+            //     ["h", "h", "h", "d", "d", "h", "h", "h", "h", "h"], //A,3
+            //     ["h", "h", "d", "d", "d", "h", "h", "h", "h", "h"], //A,4
+            //     ["h", "h", "d", "d", "d", "h", "h", "h", "h", "h"],
+            //     ["h", "d", "d", "d", "d", "h", "h", "h", "h", "h"],
+            //     ["d", "d", "d", "d", "d", "s", "s", "h", "h", "h"],
+            //     ["s", "s", "s", "s", "d", "s", "s", "s", "s", "s"],
+            //     ["s", "s", "s", "s", "s", "s", "s", "s", "s", "s"],
+            //     ["s", "s", "s", "s", "s", "s", "s", "s", "s", "s"], //A,10
+            //     ["h", "h", "h", "d", "d", "h", "h", "h", "h", "h"], //A,A
+            // ]),
+            // splits_array: arr2(&[
+            //     ["y", "y", "y", "y", "y", "y", "n", "n", "n", "n"], // 2,2
+            //     ["y", "y", "y", "y", "y", "y", "n", "n", "n", "n"], // 3,3
+            //     ["n", "n", "n", "y", "y", "n", "n", "n", "n", "n"],
+            //     ["n", "n", "n", "n", "n", "n", "n", "n", "n", "n"],
+            //     ["y", "y", "y", "y", "y", "n", "n", "n", "n", "n"],
+            //     ["y", "y", "y", "y", "y", "y", "n", "n", "n", "n"],
+            //     ["y", "y", "y", "y", "y", "y", "y", "y", "y", "y"],
+            //     ["y", "y", "y", "y", "y", "n", "y", "y", "n", "n"],
+            //     ["n", "n", "n", "n", "n", "n", "n", "n", "n", "n"], // 10, 10
+            //     ["y", "y", "y", "y", "y", "y", "y", "y", "y", "y"], // A,A
+            // ]),
 
             macro_rules! basic_input {
                 ( $e:expr ) => {{
@@ -399,7 +443,7 @@ pub fn play() -> usize {
                         if $e.cards.cards[0] == $e.cards.cards[1]
                         && bet == 0
                         && wallet.balance >= wallet.bet
-                        && rule_split[[to_index!($e.cards.cards[0]), to_index!(dealer_up)]] == 1
+                        && rule_split[[to_index!($e.cards.cards[0]), to_index!(dealer_up)]] == "y"
                         {
                         split = true;
                         $e.cards.cards.remove(1);
@@ -407,12 +451,15 @@ pub fn play() -> usize {
                         "h"
                         } else {
                             match $e.sum {
-                                Card::Maybe(_, _) => {
-                                    rule_soft[[(real_sum!($e)-12) as usize, to_index!(dealer_up)]]
+                                Card::Maybe(_, n) => {
+                                    rule_soft[[((match n {
+                                        12 => 9,
+                                        _ => n-13
+                                    })) as usize, to_index!(dealer_up)]]
                                 }
                                 Card::Def(n) => {
                                     if n <= 8 { "h" } else {
-                                        if n >= 17 {"s"} else {
+                                        if n >= 19 {"s"} else {
                                             rule_hard[[(n-9) as usize, to_index!(dealer_up)]]
                                         }
                                     }

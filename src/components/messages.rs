@@ -45,13 +45,11 @@ impl Component for Messages {
             }
         };
         html! {
-            <div class=("container-messages", "container"),>
-                <div class="scroller-wrapper",>
-                    <div class="scroller",>
-                        <ul>{
-                            for self.messages.iter().rev().map(view_message)}
-                        </ul>
-                    </div>
+            <div class="scroller-wrapper",>
+                <div class="scroller",>
+                    <ul>{
+                        for self.messages.iter().map(view_message)}
+                    </ul>
                 </div>
             </div>
         }
